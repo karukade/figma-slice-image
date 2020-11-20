@@ -1,0 +1,7 @@
+{
+  "name": "slice image plugin",
+  "id": "911530656152251120",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html"
+}
