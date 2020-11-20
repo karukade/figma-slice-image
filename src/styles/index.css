@@ -7,6 +7,15 @@
     @apply h-40 flex justify-center flex-col items-center text-gray-500 bg-gray-100 rounded-xl border-dashed border-2;
   }
   .drop-area.is-drag-over {
-    @apply bg-gray-200 transition-colors duration-150
+    @apply bg-gray-200 transition-colors duration-150;
+  }
+  .btn-primary {
+    @apply w-20 text-center bg-blue-700 font-bold text-white rounded-full shadow-xl p-1 transition-colors duration-200;
+  }
+  .btn-primary:hover {
+    @apply bg-blue-400;
+  }
+  .btn-primary.is-disabled {
+    @apply bg-gray-400;
   }
 }

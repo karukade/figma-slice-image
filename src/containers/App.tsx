@@ -5,22 +5,24 @@ import Layout from "../components/Layout"
 import Inputs from "./Inputs"
 import Preview from "./Preview"
 
-const initialValue = 100
+const initialValue = 4096 // figma image size limit
 
 export default function App(): h.JSX.Element {
   const {
     splitSize,
     imgInfo,
+    slicing,
     setFileList,
     setSliceSize,
-    sliceImgAndDownload,
+    sliceImgAndSend,
   } = useSplitImage(initialValue)
 
   const InputsProps = {
+    slicing,
     splitSize,
     setFileList,
     setSliceSize,
-    sliceImgAndDownload,
+    sliceImgAndSend,
   }
 
   return (

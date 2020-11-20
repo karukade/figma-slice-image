@@ -1,13 +1,15 @@
 import { useState, useEffect, useCallback } from "preact/hooks"
-import { sliceAndDownload } from "../utils/slice/"
+import { slice } from "../utils/slice/"
 import { fileListToDataUrlList, ImgInfo } from "../utils/fileReader"
+import { sendImages } from "../utils/send"
 
 export type UseSplitImageReturn = {
   splitSize: number
   imgInfo: ImgInfo[] | null
+  slicing: boolean
   setFileList: (files: FileList) => void
   setSliceSize: (splitSize: string) => void
-  sliceImgAndDownload: () => void
+  sliceImgAndSend: () => void
 }
 
 export const useSplitImage = (
@@ -16,6 +18,7 @@ export const useSplitImage = (
   const [splitSize, _setSliceSize] = useState(initialSplitSize)
   const [fileList, _setFileList] = useState<FileList | null>(null)
   const [imgInfo, setImgInfo] = useState<ImgInfo[] | null>(null)
+  const [slicing, setSlicing] = useState(false)
 
   const setSliceSize = useCallback((splitSize: string) => {
     if (!/^[1-9]\d*$/.test(splitSize)) return
@@ -26,8 +29,12 @@ export const useSplitImage = (
     _setFileList(files)
   }, [])
 
-  const sliceImgAndDownload = useCallback(() => {
-    imgInfo && sliceAndDownload(imgInfo, splitSize)
+  const sliceImgAndSend = useCallback(async () => {
+    if (!imgInfo) return
+    setSlicing(true)
+    const sliced = await slice(imgInfo, splitSize)
+    sendImages(sliced)
+    setSlicing(false)
   }, [imgInfo, splitSize])
 
   useEffect(() => {
@@ -47,8 +54,9 @@ export const useSplitImage = (
   return {
     splitSize,
     imgInfo,
+    slicing,
     setFileList,
     setSliceSize,
-    sliceImgAndDownload,
+    sliceImgAndSend,
   }
 }

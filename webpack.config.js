@@ -2,26 +2,29 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
-const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin')
+const InlineChunkHtmlPlugin = require("react-dev-utils/InlineChunkHtmlPlugin")
 // const HtmlWebpackInlineSourcePlugin = require("html-webpack-inline-source-plugin")
 const isDev = process.env.NODE_ENV === "development"
 
 const plugins = [
   new HtmlWebpackPlugin({
     inject: true,
-    template: './src/ui.html',
-    filename: 'ui.html',
+    template: "./src/ui.html",
+    filename: "ui.html",
   }),
-new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/^ui/])
-]
+].concat(
+  process.env.NODE_ENV === "serve"
+    ? []
+    : [new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/^ui/])]
+)
 
 module.exports = {
   mode: isDev ? "development" : "production",
   entry: {
-    ui: './src/ui.tsx', // The entry point for your UI code
-    code: './src/code.ts', // The entry point for your plugin code
+    ui: "./src/ui.tsx", // The entry point for your UI code
+    code: "./src/code.ts", // The entry point for your plugin code
   },
-  devtool: false,
+  devtool: isDev ? "inline-source-map" : false,
   module: {
     rules: [
       {
@@ -33,7 +36,7 @@ module.exports = {
               transpileOnly: true,
             },
           },
-        ]
+        ],
       },
       {
         test: /\.css$/,
