@@ -11,16 +11,18 @@ export default function App(): h.JSX.Element {
   const {
     splitSize,
     imgInfo,
+    slicing,
     setFileList,
     setSliceSize,
-    sliceImgAndDownload,
+    sliceImgAndSend,
   } = useSplitImage(initialValue)
 
   const InputsProps = {
+    slicing,
     splitSize,
     setFileList,
     setSliceSize,
-    sliceImgAndDownload,
+    sliceImgAndSend,
   }
 
   return (

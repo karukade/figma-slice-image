@@ -1,12 +1,38 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 //@ts-ignore
 import imageToSlices from "image-to-slices"
-import { ImgInfo, FileReaderResult } from "../fileReader"
+import { base64ToUint8Array } from "../utils"
+import { ImgInfo } from "../fileReader"
 
 export type ImageToSlicesResult = {
+  x: number
+  y: number
+  width: number
+  height: number
   dataURI: string
 }
-export type SliceImageResult = ImageToSlicesResult & { name: string }
+
+export type SlicedImage = Omit<ImageToSlicesResult, "dataURI"> & {
+  data: Uint8Array
+}
+
+export type SliceImageResult = {
+  slices: SlicedImage[]
+  name: string
+  size: {
+    width: number
+    height: number
+  }
+}
+
+type SliceImageParam = {
+  source: string
+  splitSize: number
+  size: {
+    width: number
+    height: number
+  }
+}
 
 // 画像サイズ取得util
 const getImageSize = (
@@ -35,28 +61,21 @@ const getLineXArray = (imageHeight: number, splitSize: number) => {
   return [...xLineArr, splitSize * splitIn + rest]
 }
 
-const isString = (string: unknown): string is string =>
-  typeof string === "string"
-
-type SliceImageParam = {
-  source: FileReaderResult
-  splitSize: number
-  name: string
-}
-
-// ダウンロードするファイル名の生成
-const createDownloadName = (sourceName: string, index: number) => {
-  const [name, ext] = sourceName.split(".")
-  return `${name}-${index}.${ext}`
+// image-to-sliceのbase64の戻り値をfigma向けにUnit8Arrayに変換
+const convertImageToSliceResult = (result: ImageToSlicesResult) => {
+  const { dataURI, ...rest } = result
+  return {
+    ...rest,
+    data: base64ToUint8Array(dataURI.replace(/^data:[^,]+,/, "")),
+  }
 }
 
 // 画像のスライス
-const sliceImage = async ({ source, splitSize, name }: SliceImageParam) => {
-  if (!isString(source)) return
+const sliceImage = async ({ source, splitSize }: SliceImageParam) => {
   const { width, height } = await getImageSize(source)
   const lineXArray = getLineXArray(height, splitSize)
   const lineYArray = [width]
-  return new Promise<SliceImageResult[]>((resolve) => {
+  return new Promise<SlicedImage[]>((resolve) => {
     imageToSlices(
       source,
       lineXArray,
@@ -65,12 +84,7 @@ const sliceImage = async ({ source, splitSize, name }: SliceImageParam) => {
         saveToDataUrl: true,
       },
       (dataUrlList: ImageToSlicesResult[]) => {
-        resolve(
-          dataUrlList.map((slicedInfo, i) => ({
-            ...slicedInfo,
-            name: createDownloadName(name, i),
-          }))
-        )
+        resolve(dataUrlList.map(convertImageToSliceResult))
       }
     )
   })
@@ -80,14 +94,21 @@ const sliceImage = async ({ source, splitSize, name }: SliceImageParam) => {
 export const sliceImages = (
   sources: ImgInfo[],
   splitSize = 100
-): Promise<(SliceImageResult[] | undefined)[]> => {
+): Promise<SliceImageResult[]> => {
+  const filtered = sources.filter((source) => source.data)
   return Promise.all(
-    sources.map((source, i) =>
-      sliceImage({
-        source: source.data,
+    filtered.map(async ({ data, name }) => {
+      const size = await getImageSize(data as string)
+      const sliceResult = await sliceImage({
+        source: data as string,
         splitSize: splitSize,
-        name: source.name,
+        size,
       })
-    )
+      return {
+        slices: sliceResult,
+        name,
+        size,
+      }
+    })
   )
 }
