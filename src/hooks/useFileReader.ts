@@ -1,14 +1,23 @@
-import { useState, useEffect } from "preact/hooks"
+import { useState, useEffect, useCallback } from "preact/hooks"
 import { fileListToDataUrlList, ImgInfo } from "../utils/fileReader"
 
 export type UseFileReaderReturn = {
   imgInfo: ImgInfo[] | null
   setFileList: (files: FileList) => void
+  removeImg: (name: string) => void
 }
 
 export const useFileReader = (): UseFileReaderReturn => {
   const [fileList, setFileList] = useState<FileList | null>(null)
   const [imgInfo, setImgInfo] = useState<ImgInfo[] | null>(null)
+
+  const removeImg = useCallback((name: string) => {
+    setImgInfo((imgInfo) => {
+      if (!imgInfo) return null
+      const filtered = imgInfo.filter((info) => info.name !== name)
+      return filtered ? filtered : null
+    })
+  }, [])
 
   useEffect(() => {
     if (!fileList) return
@@ -24,5 +33,6 @@ export const useFileReader = (): UseFileReaderReturn => {
   return {
     imgInfo,
     setFileList,
+    removeImg,
   }
 }

@@ -11,7 +11,7 @@ import Preview from "./Preview"
 const initialValue = 4096 // figma image size limit
 
 export default function App(): h.JSX.Element {
-  const { imgInfo, setFileList } = useFileReader()
+  const { imgInfo, setFileList, removeImg } = useFileReader()
   const { sliceSize, slicing, sliced, setSliceSize, sliceImg } = useSplitImage(
     initialValue,
     imgInfo
@@ -34,7 +34,7 @@ export default function App(): h.JSX.Element {
     <Fragment>
       <Layout
         left={<Inputs {...InputsProps} />}
-        right={imgInfo && <Preview sources={imgInfo} />}
+        right={imgInfo && <Preview imgInfo={imgInfo} removeImg={removeImg} />}
       />
     </Fragment>
   )

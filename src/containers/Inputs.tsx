@@ -2,6 +2,7 @@ import { h, Fragment } from "preact"
 import { UseSplitImageReturn } from "../hooks/useSplitImage"
 import { UseFileReaderReturn } from "../hooks/useFileReader"
 import Button from "../components/Button"
+import Spinner from "../components/Spinner"
 
 import DropArea from "../components/DropArea"
 import Input from "../components/Input"
@@ -28,7 +29,14 @@ export default function Inputs({
       </div>
       <div className="mt-4 flex justify-center items-center">
         <Button onClick={sliceImg} disabled={slicing}>
-          {slicing ? "Slicing" : "Slice"}
+          {slicing ? (
+            <Fragment>
+              <Spinner />
+              Slicing...
+            </Fragment>
+          ) : (
+            "Slice"
+          )}
         </Button>
       </div>
     </Fragment>
