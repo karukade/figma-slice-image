@@ -1,18 +1,24 @@
 import { h } from "preact"
 import { memo } from "preact/compat"
+
+import { useRemoveTransition } from "../hooks/useRemoveTransition"
 import { ImgInfo } from "../utils/fileReader"
 import { UseFileReaderReturn } from "../hooks/useFileReader"
 
 function PreviewItem({
+  index,
   src,
   removeImg,
 }: {
+  index: number
   src: ImgInfo
   removeImg: UseFileReaderReturn["removeImg"]
 }) {
   const onClick = () => removeImg(src.name)
+  const targetRef = useRemoveTransition(index)
+
   return (
-    <div className="bg-white rounded-lg text-center p-1">
+    <div ref={targetRef} className="bg-white rounded-lg text-center p-1">
       <div className="h-18 overflow-hidden relative">
         <button
           onClick={onClick}
