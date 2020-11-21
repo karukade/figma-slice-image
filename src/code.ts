@@ -1,5 +1,14 @@
 import { Message } from "./types/message"
-import { SliceImageResult } from "./utils/slice/sliceImage"
+import { SliceImageResult } from "./utils/slice/sliceImages"
+
+type CreateFrameParams = {
+  x?: number
+  size: {
+    width: number
+    height: number
+  }
+  name: string
+}
 
 figma.showUI(__html__, {
   width: 800,
@@ -25,15 +34,6 @@ const putImage = (
   return rect
 }
 
-type CreateFrameParams = {
-  x?: number
-  size: {
-    width: number
-    height: number
-  }
-  name: string
-}
-
 const createFrame = ({ size, name, x }: CreateFrameParams) => {
   const frame = figma.createFrame()
   frame.name = name
@@ -43,12 +43,9 @@ const createFrame = ({ size, name, x }: CreateFrameParams) => {
 }
 
 figma.ui.onmessage = ({ type, data }: Message) => {
-  // One way of distinguishing between different types of messages sent from
-  // your HTML page is to use an object with a "type" property like this.
   if (type === "put-image") {
     const space = 200
     data.reduce<null | number>((prev, curr) => {
-      console.log(prev)
       const { name, size, slices } = curr
       const frame = createFrame({
         name,
@@ -60,7 +57,5 @@ figma.ui.onmessage = ({ type, data }: Message) => {
     }, null)
   }
 
-  // Make sure to close the plugin when you're done. Otherwise the plugin will
-  // keep running, which shows the cancel button at the bottom of the screen.
   figma.closePlugin()
 }

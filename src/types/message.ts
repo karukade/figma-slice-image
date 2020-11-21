@@ -1,4 +1,4 @@
-import { SliceImageResult } from "../utils/slice/sliceImage"
+import { SliceImageResult } from "../utils/slice/sliceImages"
 export type MessageBase<Message extends string, Data> = {
   type: Message
   data: Data
