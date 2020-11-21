@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin")
 const InlineChunkHtmlPlugin = require("react-dev-utils/InlineChunkHtmlPlugin")
 // const HtmlWebpackInlineSourcePlugin = require("html-webpack-inline-source-plugin")
 const isDev = process.env.NODE_ENV === "development"
+const isServe = process.env.NODE_ENV === "serve"
 
 const plugins = [
   new HtmlWebpackPlugin({
@@ -12,11 +13,7 @@ const plugins = [
     template: "./src/ui.html",
     filename: "ui.html",
   }),
-].concat(
-  process.env.NODE_ENV === "serve"
-    ? []
-    : [new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/^ui/])]
-)
+].concat(isServe ? [] : [new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/^ui/])])
 
 module.exports = {
   mode: isDev ? "development" : "production",
@@ -24,7 +21,7 @@ module.exports = {
     ui: "./src/ui.tsx", // The entry point for your UI code
     code: "./src/code.ts", // The entry point for your plugin code
   },
-  devtool: isDev ? "inline-source-map" : false,
+  devtool: isDev ? "inline-source-map" : isServe ? "eval" : false,
   module: {
     rules: [
       {
