@@ -31,7 +31,6 @@ export const useRemoveTransition = (
       elm.removeEventListener("transitionend", ontransitionEnd)
     }
     elm.addEventListener("transitionend", ontransitionEnd)
-    elm.offsetLeft // force reflow
     elm.style.transition = "transform 0.25s ease"
     elm.style.transform = `translate(0, 0)`
 
