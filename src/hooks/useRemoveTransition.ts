@@ -19,9 +19,7 @@ export const useRemoveTransition = (
       return
     }
 
-    elm.style.transform = `translate(${(x - prev.x) * -1}px, ${
-      (y - prev.y) * -1
-    }px)`
+    elm.style.transform = `translate(${prev.x - x}px, ${prev.y - y}px)`
 
     elm.offsetLeft // force reflow
 
