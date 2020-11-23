@@ -1,5 +1,5 @@
 import { Message } from "./types/message"
-import { SliceImageResult } from "./utils/slice/sliceImages"
+import { SplitImageResult } from "./utils/splitImage/splitImages"
 
 type CreateFrameParams = {
   x?: number
@@ -16,19 +16,19 @@ figma.showUI(__html__, {
 })
 
 const putImage = (
-  slice: SliceImageResult["slices"][number],
+  imgInfo: SplitImageResult["splited"][number],
   frame: FrameNode
 ) => {
-  const img = figma.createImage(slice.data)
+  const img = figma.createImage(imgInfo.data)
   const rect = figma.createRectangle()
   const imagePaint: ImagePaint = {
     type: "IMAGE",
     scaleMode: "FIT",
     imageHash: img.hash,
   }
-  rect.resize(slice.width, slice.height)
-  rect.x = slice.x
-  rect.y = slice.y
+  rect.resize(imgInfo.width, imgInfo.height)
+  rect.x = imgInfo.x
+  rect.y = imgInfo.y
   rect.fills = [imagePaint]
   frame.appendChild(rect)
   return rect
@@ -46,13 +46,13 @@ figma.ui.onmessage = ({ type, data }: Message) => {
   if (type === "put-image") {
     const space = 200
     data.reduce<null | number>((prev, curr) => {
-      const { name, size, slices } = curr
+      const { name, size, splited } = curr
       const frame = createFrame({
         name,
         size,
         x: prev ? prev : undefined,
       })
-      slices.forEach((slice) => putImage(slice, frame))
+      splited.forEach((img) => putImage(img, frame))
       return (prev ? prev + curr.size.width : curr.size.width) + space
     }, null)
   }

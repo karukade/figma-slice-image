@@ -1,5 +1,5 @@
 {
-  "name": "slice image plugin",
+  "name": "Split Image",
   "id": "911530656152251120",
   "api": "1.0.0",
   "main": "dist/code.js",

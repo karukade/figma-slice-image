@@ -1,7 +1,7 @@
 import { useState } from "preact/hooks"
 
 export type UseDropHandlerParams = {
-  onDrop?: (fileList: FileList) => void
+  onDrop?: (e: DragEvent) => void
   onDragOver?: (e: DragEvent) => void
   onDragLeave?: (e: DragEvent) => void
 }
@@ -18,10 +18,9 @@ export const useDropHandler = ({
 } => {
   const [isDragOver, setIsDragOver] = useState(false)
   const _onDrop = (e: DragEvent) => {
-    if (!e.dataTransfer) return
     e.stopPropagation()
     e.preventDefault()
-    onDrop && onDrop(e.dataTransfer.files)
+    onDrop && onDrop(e)
     setIsDragOver(false)
   }
 

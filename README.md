@@ -1,4 +1,4 @@
-# slice-image-plugin Figma
+# split image Figma Plugin
 
 画像を分割して配置するためのFigmaプラグイン。
 Figmaの画像サイズ制限（4096px）を回避するために作成。

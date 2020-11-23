@@ -1,6 +1,9 @@
+import { nanoid } from "nanoid"
+
 export type FileReaderResult = string | ArrayBuffer | null | undefined
 export type ImgInfo = {
   data: FileReaderResult
+  id: string
   name: string
   mimeType: string
 }
@@ -12,6 +15,7 @@ export const fileListToDataUrlList = (files: FileList): Promise<ImgInfo[]> => {
         const reader = new FileReader()
         reader.onload = function (e) {
           resolve({
+            id: nanoid(),
             data: e.target?.result,
             name: file.name,
             mimeType: file.type,

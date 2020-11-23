@@ -1,41 +1,41 @@
 import { useState, useCallback } from "preact/hooks"
-import { sliceImages, SliceImageResult } from "../utils/slice/sliceImages"
+import { splitImages, SplitImageResult } from "../utils/splitImage/splitImages"
 import { ImgInfo } from "../utils/fileReader"
 
 export type UseSplitImageReturn = {
-  sliceSize: number
-  slicing: boolean
-  sliced: SliceImageResult[] | null
-  setSliceSize: (splitSize: string) => void
-  sliceImg: () => void
+  splitSize: number
+  splitting: boolean
+  splited: SplitImageResult[] | null
+  setSplitSize: (splitSize: string) => void
+  splitImg: () => void
 }
 
 export const useSplitImage = (
-  initialSliceSize: number,
+  initialSplitSize: number,
   imgList: ImgInfo[] | null
 ): UseSplitImageReturn => {
-  const [sliceSize, _setSliceSize] = useState(initialSliceSize)
-  const [slicing, setSlicing] = useState(false)
-  const [sliced, setSliced] = useState<SliceImageResult[] | null>(null)
+  const [splitSize, _setSplitSize] = useState(initialSplitSize)
+  const [splitting, setSplitting] = useState(false)
+  const [splited, setSplited] = useState<SplitImageResult[] | null>(null)
 
-  const setSliceSize = useCallback((splitSize: string) => {
+  const setSplitSize = useCallback((splitSize: string) => {
     if (!/^[1-9]\d*$/.test(splitSize)) return
-    _setSliceSize(parseInt(splitSize))
+    _setSplitSize(parseInt(splitSize))
   }, [])
 
-  const sliceImg = useCallback(async () => {
+  const splitImg = useCallback(async () => {
     if (!imgList) return
-    setSlicing(true)
-    const sliced = await sliceImages(imgList, sliceSize)
-    setSliced(sliced)
-    setSlicing(false)
-  }, [imgList, sliceSize])
+    setSplitting(true)
+    const splited = await splitImages(imgList, splitSize)
+    setSplited(splited)
+    setSplitting(false)
+  }, [imgList, splitSize])
 
   return {
-    sliceSize,
-    slicing,
-    sliced,
-    setSliceSize,
-    sliceImg,
+    splitSize,
+    splitting,
+    splited,
+    setSplitSize,
+    splitImg,
   }
 }

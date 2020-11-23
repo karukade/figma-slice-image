@@ -4,8 +4,8 @@ import slices from "slices"
 import { createClopper, CropSize, ClopReturnType } from "./clop"
 import { ImgInfo } from "../fileReader"
 
-export type SliceImageResult = {
-  slices: ClopReturnType[]
+export type SplitImageResult = {
+  splited: ClopReturnType[]
   name: string
   size: {
     width: number
@@ -42,11 +42,11 @@ const createSplitArray = (
   }
 }
 
-export const sliceImages = async (
+export const splitImages = async (
   images: ImgInfo[],
   splitSize: number
-): Promise<SliceImageResult[]> => {
-  const sliced = []
+): Promise<SplitImageResult[]> => {
+  const results = []
 
   for (const imgInfo of images) {
     const { name, data, mimeType } = imgInfo
@@ -64,12 +64,12 @@ export const sliceImages = async (
       })
     )
 
-    sliced.push({
+    results.push({
       name,
       size: { width, height },
-      slices: result,
+      splited: result,
     })
   }
 
-  return sliced
+  return results
 }

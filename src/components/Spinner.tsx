@@ -1,6 +1,6 @@
 import { h } from "preact"
 
-export default function Spinner() {
+export default function Spinner(): h.JSX.Element {
   return (
     <svg
       class="animate-spin mr-1 h-2 w-2 text-white inline"
